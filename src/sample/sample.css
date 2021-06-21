@@ -1,0 +1,32 @@
+.root {
+       -fx-font-family: "微软雅黑";
+       -fx-font-size: 16px;
+       /*-fx-background-image: url(images/su.jpg);*/
+       -fx-background-size: stretch stretch;
+       -fx-background-position: center center;
+}
+
+/*button类型选择器设置所有Button的背景色*/
+.button {
+       -fx-background-color: darkturquoise;
+       transition: 2s;
+       -fx-transition: 2s;
+}
+
+/*hover伪类选择器设置鼠标移过Button时的背景色*/
+/* .button:hover {
+     -fx-background-color: lightskyblue;
+     -fx-font-size: 30px;
+      }*/
+/*id选择器设置Label标题的样式*/
+#lblTitle {
+       -fx-font-size: 20px;
+       -fx-font-weight: bolder;
+       -fx-text-fill: darkslategray;
+}
+
+#T1 {
+       -fx-background-image: url(images/su.jpg);
+       -fx-background-color: yellow;
+       -fx-padding: 10px;
+}
