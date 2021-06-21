@@ -64,7 +64,7 @@ public class sampleController extends Node {
                 while (bis.ready()) {
                     data.append(bis.readLine()+"\n");
 
-                    
+
                 }
                 T1.setText(String.valueOf(data));
 
