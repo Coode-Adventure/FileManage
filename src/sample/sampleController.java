@@ -55,7 +55,7 @@ public class sampleController extends Node {
     }
 
     public void CreateFile(MouseEvent event) throws IOException {
-        File f1 = new File("src/sample/file/test.txt");
+        File f1 = new File("src/sample/file/tes.txt");
         if (f1.exists()) {
             System.out.println("文件已存在");
             try (BufferedReader bis = new BufferedReader(new FileReader("src/sample/file/test.txt"))){
