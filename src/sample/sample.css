@@ -14,10 +14,10 @@
 }
 
 /*hover伪类选择器设置鼠标移过Button时的背景色*/
-/* .button:hover {
+ .button:hover {
      -fx-background-color: lightskyblue;
      -fx-font-size: 30px;
-      }*/
+      }
 /*id选择器设置Label标题的样式*/
 #lblTitle {
        -fx-font-size: 20px;

@@ -1,16 +1,20 @@
 package sample;
 
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
+import java.awt.*;
+import java.awt.Dialog;
 import java.io.*;
 import java.sql.*;
+import java.util.Arrays;
 
 public class sampleController extends Node {
     @FXML
@@ -20,6 +24,12 @@ public class sampleController extends Node {
     public Button SelectButton;
     public TextArea T2;
     public Pane P1;
+    public TabPane mainTab;
+    public Button fenYe;
+    public SplitPane mainView;
+    public MenuItem openFile;
+    public Tab Tab1;
+    public TextArea Text1;
 
     @FXML
     public void Bclick(MouseEvent event) {
@@ -93,21 +103,79 @@ public class sampleController extends Node {
 
     //添加按钮和事件
     public void SelectFile(MouseEvent event) {
-        Button B2 = new Button();
-        B2.setText("B2");
-        B2.setLayoutX(150.0);
+//        Button B2 = new Button();
+//        B2.setText("B2");
+//        B2.setLayoutX(150.0);
+//
+//        //添加按钮点击事件
+//        B2.setOnMouseClicked(
+//                (EventHandler<Event>) event1 -> {
+//                    B2.setText("CLICK");
+//                    B2.setLayoutX(200);
+//                }
+//        );
+//        P1.getChildren().add(B2);
 
-        //添加按钮点击事件
-        B2.setOnMouseClicked(
-                new EventHandler(){
+//        Tab tab1 = new Tab();
+//        tab1.setText("测试");
+//        TextArea area1 = new TextArea();
+//        tab1.setContent(area1);
+//        mainTab.getTabs().add(tab1);
+//        System.out.println(mainTab.getTabs());
 
-                    @Override
-                    public void handle(Event event) {
-                        B2.setText("CLICK");
-                    }
-                }
-        );
-        P1.getChildren().add(B2);
+        String str=Text1.getText();
+        System.out.println(str);
+
     }
 
+    public void fenYeClick(MouseEvent event) {
+        TabPane pane1 = new TabPane();
+        Tab tab1 = new Tab();
+        tab1.setText("测试");
+        TextArea area1 = new TextArea();
+        tab1.setContent(area1);
+        pane1.getTabs().add(tab1);
+        mainView.getItems().add(pane1);
+    }
+
+    //打开文件
+    public void openFile(Event event) {
+        FileDialog fd=new FileDialog((Dialog) null,"另存为",1);
+        fd.setVisible(true);
+        System.out.println(fd.getDirectory()+fd.getFile()+".txt");
+
+        File file=new File(fd.getDirectory()+fd.getFile()+".txt");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileWriter writer=new FileWriter(file);
+            String str=Text1.getText();
+            System.out.println(str);
+            writer.write(str);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+//        try {
+//            FileOutputStream out =new FileOutputStream(fd.getDirectory()+ fd.getFile() +".txt");
+//            String str="TEST";
+//            try {
+//                out.write(str.getBytes());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                out.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+    }
 }
