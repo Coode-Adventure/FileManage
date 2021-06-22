@@ -1,20 +1,20 @@
 package sample;
 
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
-import java.awt.*;
 import java.awt.Dialog;
+import java.awt.*;
 import java.io.*;
 import java.sql.*;
-import java.util.Arrays;
 
 public class sampleController extends Node {
     @FXML
@@ -100,7 +100,7 @@ public class sampleController extends Node {
 
 
     }
-
+    int id=0;
     //添加按钮和事件
     public void SelectFile(MouseEvent event) {
 //        Button B2 = new Button();
@@ -118,13 +118,16 @@ public class sampleController extends Node {
 
         Tab tab1 = new Tab();
         tab1.setText("测试");
+        tab1.setId(String.valueOf(id++));
+        System.out.println(tab1.getId());
         TextArea area1 = new TextArea();
         tab1.setContent(area1);
+        tab1.setOnSelectionChanged((EventHandler<Event>) event1 -> {
+                    tab1.setText("ooo");
+                });
         mainTab.getTabs().add(tab1);
         System.out.println(mainTab.getTabs());
 
-//        String str=Text1.getText();
-//        System.out.println(str);
 
     }
 
@@ -178,4 +181,6 @@ public class sampleController extends Node {
 //            e.printStackTrace();
 //        }
     }
+
+
 }
