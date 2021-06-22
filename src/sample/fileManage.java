@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 import java.util.Objects;
 
 public class fileManage extends Application {
@@ -17,7 +19,7 @@ public class fileManage extends Application {
         Scene scene = new Scene(root, 600, 400);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("sample.css")).toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+//        primaryStage.setResizable(false);
 
         primaryStage.show();
     }
