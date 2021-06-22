@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,6 +31,9 @@ public class sampleController extends Node {
     public MenuItem openFile;
     public Tab Tab1;
     public TextArea Text1;
+    //添加按钮和事件
+    int id = 0;
+    TabPane tabMain = null;
 
     @FXML
     public void Bclick(MouseEvent event) {
@@ -100,62 +104,105 @@ public class sampleController extends Node {
 
 
     }
-    int id=0;
-    //添加按钮和事件
+
+    //清空空元素TabPane
+    public void deleteTabPane() {
+        System.out.println(mainView.getItems()+"---");
+        TabPane de=null;
+        for (Node s : mainView.getItems()) {
+            System.out.println(((TabPane) s).getTabs()+"++++");
+            if((((TabPane) s).getTabs()).size()==0){
+                System.out.println("有一个为空");
+                de= (TabPane) s;
+            }
+        }
+        //TabPane至少保留一个
+        if(mainView.getItems().size()!=1){
+            mainView.getItems().remove(de);
+        }
+        System.out.println(mainView.getItems()+"----");
+    }
+
     public void SelectFile(MouseEvent event) {
-//        Button B2 = new Button();
-//        B2.setText("B2");
-//        B2.setLayoutX(150.0);
-//
-//        //添加按钮点击事件
-//        B2.setOnMouseClicked(
-//                (EventHandler<Event>) event1 -> {
-//                    B2.setText("CLICK");
-//                    B2.setLayoutX(200);
-//                }
-//        );
-//        P1.getChildren().add(B2);
+
+
+        if (tabMain == null) {
+            ObservableList<Node> l = mainView.getItems();
+            tabMain = (TabPane) l.get(0);
+        }
 
         Tab tab1 = new Tab();
         tab1.setText("测试");
         tab1.setId(String.valueOf(id++));
-        System.out.println(tab1.getId());
+//        System.out.println(tab1.getId());
         TextArea area1 = new TextArea();
         tab1.setContent(area1);
-        tab1.setOnSelectionChanged((EventHandler<Event>) event1 -> {
-                    tab1.setText("ooo");
-                });
-        mainTab.getTabs().add(tab1);
-        System.out.println(mainTab.getTabs());
+        //获取焦点
+        tab1.setOnSelectionChanged(event1 -> {
+            tab1.setText("ooo");
+            TextArea a = (TextArea) tab1.getContent();
+            a.setText(tab1.getId());
+
+        });
+        tab1.setOnClosed(
+                event1 -> {
+                    TextArea a = (TextArea) tab1.getContent();
+                    a.setText(tab1.getId());
+//                    System.out.println(a.getText());
+                    deleteTabPane();
+                }
+        );
+        tabMain.getTabs().add(tab1);
+//        System.out.println(tabMain.getTabs());
 
 
     }
 
+    //添加TabPane
     public void fenYeClick(MouseEvent event) {
         TabPane pane1 = new TabPane();
+        pane1.setOnMouseClicked(
+                (EventHandler<Event>) event1 -> {
+                    tabMain = pane1;
+                });
         Tab tab1 = new Tab();
         tab1.setText("测试");
+        tab1.setOnSelectionChanged(event1 -> {
+            tab1.setText("ooo");
+            TextArea a = (TextArea) tab1.getContent();
+            a.setText(tab1.getId());
+
+        });
+        tab1.setOnClosed(
+                event1 -> {
+//                    System.out.println(a.getText());
+                    deleteTabPane();
+                }
+        );
         TextArea area1 = new TextArea();
         tab1.setContent(area1);
         pane1.getTabs().add(tab1);
         mainView.getItems().add(pane1);
+//        System.out.println(pane1);
+
+
     }
 
     //打开文件
     public void openFile(Event event) {
-        FileDialog fd=new FileDialog((Dialog) null,"另存为",1);
+        FileDialog fd = new FileDialog((Dialog) null, "另存为", 1);
         fd.setVisible(true);
-        System.out.println(fd.getDirectory()+fd.getFile()+".txt");
+        System.out.println(fd.getDirectory() + fd.getFile() + ".txt");
 
-        File file=new File(fd.getDirectory()+fd.getFile()+".txt");
+        File file = new File(fd.getDirectory() + fd.getFile() + ".txt");
         try {
             file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            FileWriter writer=new FileWriter(file);
-            String str=Text1.getText();
+            FileWriter writer = new FileWriter(file);
+            String str = Text1.getText();
             System.out.println(str);
             writer.write(str);
             writer.close();
@@ -183,4 +230,8 @@ public class sampleController extends Node {
     }
 
 
+    public void focusChange(MouseEvent event) {
+        ObservableList<Node> l = mainView.getItems();
+        tabMain = (TabPane) l.get(0);
+    }
 }
