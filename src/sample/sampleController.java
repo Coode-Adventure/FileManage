@@ -116,15 +116,15 @@ public class sampleController extends Node {
 //        );
 //        P1.getChildren().add(B2);
 
-//        Tab tab1 = new Tab();
-//        tab1.setText("测试");
-//        TextArea area1 = new TextArea();
-//        tab1.setContent(area1);
-//        mainTab.getTabs().add(tab1);
-//        System.out.println(mainTab.getTabs());
+        Tab tab1 = new Tab();
+        tab1.setText("测试");
+        TextArea area1 = new TextArea();
+        tab1.setContent(area1);
+        mainTab.getTabs().add(tab1);
+        System.out.println(mainTab.getTabs());
 
-        String str=Text1.getText();
-        System.out.println(str);
+//        String str=Text1.getText();
+//        System.out.println(str);
 
     }
 
