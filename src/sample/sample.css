@@ -1,6 +1,10 @@
+@font-face {
+       src: url("font/Minecraft.ttf") format('truetype');
+}
+
 .root {
-       -fx-font-family: "微软雅黑";
-       -fx-font-size: 16px;
+       -fx-font-family: 'Minecraft AE';
+       -fx-font-size: 22px;
        /*-fx-background-image: url(images/su.jpg);*/
        -fx-background-size: stretch stretch;
        -fx-background-position: center center;
@@ -8,16 +12,51 @@
 
 /*button类型选择器设置所有Button的背景色*/
 .button {
-       -fx-background-color: darkturquoise;
+       -fx-background-color: rgba(53, 89, 119, 0.2);
+
        transition: 2s;
        -fx-transition: 2s;
 }
 
+.tab {
+       -fx-font-size: 15px;
+       -fx-background-color: grey;
+       /* -fx-background-image: url(images/su.jpg); */
+}
+
+.tab:selected {
+       -fx-background-color: red;
+}
+
+.text-area {
+       -fx-background-color: rgba(53, 89, 119, 0.2);
+       -fx-padding: 20px;
+
+}
+
+.text-area .content {
+       -fx-background-image: url(images/su.jpg);
+}
+
+/* .text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+} */
+.pane {
+       -fx-background-image: url(images/su.jpg);
+       -fx-padding: 20px;
+}
+
 /*hover伪类选择器设置鼠标移过Button时的背景色*/
- /*.button:hover {
-     -fx-background-color: lightskyblue;
-     -fx-font-size: 30px;
-      }*/
+.button:hover {
+       -fx-background-color: rgba(53, 89, 119, 0.5);
+}
+
 /*id选择器设置Label标题的样式*/
 #lblTitle {
        -fx-font-size: 20px;

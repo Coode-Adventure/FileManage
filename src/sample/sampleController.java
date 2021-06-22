@@ -132,14 +132,14 @@ public class sampleController extends Node {
         }
 
         Tab tab1 = new Tab();
-        tab1.setText("测试");
+        tab1.setText("未命名");
         tab1.setId(String.valueOf(id++));
 //        System.out.println(tab1.getId());
         TextArea area1 = new TextArea();
         tab1.setContent(area1);
         //获取焦点
         tab1.setOnSelectionChanged(event1 -> {
-            tab1.setText("ooo");
+//            tab1.setText("ooo");
             TextArea a = (TextArea) tab1.getContent();
             a.setText(tab1.getId());
 
@@ -162,13 +162,13 @@ public class sampleController extends Node {
     public void fenYeClick(MouseEvent event) {
         TabPane pane1 = new TabPane();
         pane1.setOnMouseClicked(
-                (EventHandler<Event>) event1 -> {
+                event1 -> {
                     tabMain = pane1;
                 });
         Tab tab1 = new Tab();
-        tab1.setText("测试");
+        tab1.setText("未命名");
         tab1.setOnSelectionChanged(event1 -> {
-            tab1.setText("ooo");
+//            tab1.setText("未命名");
             TextArea a = (TextArea) tab1.getContent();
             a.setText(tab1.getId());
 
