@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
@@ -16,25 +17,26 @@ import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class sampleController extends Node {
     @FXML
-    public Button B1;
-    public TextArea T1;
     public Button CreateButton;
     public Button SelectButton;
     public TextArea T2;
     public Pane P1;
-    public TabPane mainTab;
     public Button fenYe;
     public SplitPane mainView;
     public MenuItem openFile;
-    public Tab Tab1;
-    public TextArea Text1;
+    public Menu openData;
     //添加按钮和事件
     int id = 0;
     TabPane tabMain = null;
+    //获取当前text页面
+    TextArea nowText = null;
+    Tab nowTab = null;
+
 
     @FXML
     public void Bclick(MouseEvent event) {
@@ -125,26 +127,47 @@ public class sampleController extends Node {
     }
 
     public void SelectFile(MouseEvent event) {
+        addText(null,null);
 
+    }
 
+    public void addText(StringBuilder text,String name) {
         if (tabMain == null) {
             ObservableList<Node> l = mainView.getItems();
-            tabMain = (TabPane) l.get(0);
+            if (l.size() == 0) {
+                TabPane pane1 = new TabPane();
+                pane1.setOnMouseClicked(
+                        event1 -> {
+                            tabMain = pane1;
+                            System.out.println("clicked");
+                        });
+                tabMain = pane1;
+                mainView.getItems().add(tabMain);
+            } else {
+                tabMain = (TabPane) l.get(0);
+            }
         }
 
         Tab tab1 = new Tab();
-        tab1.setText("未命名");
         tab1.setId(String.valueOf(id++));
 //        System.out.println(tab1.getId());
         TextArea area1 = new TextArea();
+        if(text!=null){
+            area1.setText(String.valueOf(text));
+            tab1.setText(name+".txt");
+        }else{
+            tab1.setText("未命名.txt");
+        }
         tab1.setContent(area1);
         //获取焦点
         tab1.setOnSelectionChanged(event1 -> {
-//            tab1.setText("ooo");
-            TextArea a = (TextArea) tab1.getContent();
-            a.setText(tab1.getId());
-
+            if (nowTab != tab1) {
+                nowTab = tab1;
+                nowText = (TextArea) tab1.getContent();
+                System.out.println("焦点改变+" + tab1.getId());
+            }
         });
+
         tab1.setOnClosed(
                 event1 -> {
                     TextArea a = (TextArea) tab1.getContent();
@@ -155,8 +178,6 @@ public class sampleController extends Node {
         );
         tabMain.getTabs().add(tab1);
 //        System.out.println(tabMain.getTabs());
-
-
     }
 
     //添加TabPane
@@ -165,6 +186,7 @@ public class sampleController extends Node {
         pane1.setOnMouseClicked(
                 event1 -> {
                     tabMain = pane1;
+                    System.out.println("clicked");
                 });
         Tab tab1 = new Tab();
         tab1.setText("未命名");
@@ -176,7 +198,6 @@ public class sampleController extends Node {
         });
         tab1.setOnClosed(
                 event1 -> {
-//                    System.out.println(a.getText());
                     deleteTabPane();
                 }
         );
@@ -184,9 +205,13 @@ public class sampleController extends Node {
         tab1.setContent(area1);
         pane1.getTabs().add(tab1);
         mainView.getItems().add(pane1);
-//        System.out.println(pane1);
 
 
+    }
+
+    public void focusChange(MouseEvent event) {
+        ObservableList<Node> l = mainView.getItems();
+        tabMain = (TabPane) l.get(0);
     }
 
     //打开文件
@@ -198,10 +223,13 @@ public class sampleController extends Node {
         String tim = sdf.format(new Date());
         int count = 0;
         FileDialog fd = new FileDialog((Dialog) null, "另存为", 1);
+
         fd.setVisible(true);
         System.out.println(fd.getDirectory() + fd.getFile() + ".txt");
         String name = fd.getFile();
         File file = new File(fd.getDirectory() + fd.getFile() + ".txt");
+        if (fd.getFile() == null) return;
+
         try {
             file.createNewFile();
         } catch (IOException e) {
@@ -209,14 +237,16 @@ public class sampleController extends Node {
         }
         try {
             FileWriter writer = new FileWriter(file);
-            String str = Text1.getText();
+            String str = nowText.getText();
             System.out.println(str);
             writer.write(str);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        nowTab.setText(fd.getFile() + ".txt");
         File f1 = new File(fd.getDirectory() + fd.getFile() + ".txt");
+
         if (f1.exists()) {
             try (BufferedReader bis = new BufferedReader(new FileReader(fd.getDirectory() + fd.getFile() + ".txt"))) {
 
@@ -278,50 +308,102 @@ public class sampleController extends Node {
     }
 
 
-//        FileDialog fd = new FileDialog((Dialog) null, "另存为", 1);
-//        fd.setVisible(true);
-//        System.out.println(fd.getDirectory() + fd.getFile() + ".txt");
+    public ArrayList<String> getList() {
+        String driver = "com.mysql.cj.jdbc.Driver";
+        String url = "jdbc:mysql://42.192.73.17:3306/fileManage?&useSSL=false&serverTimezone=UTC";
+        String user = "root";
+        String password = "lapis";
+        StringBuilder in = new StringBuilder();
+        ArrayList<String> array = new ArrayList<>();
+        try {
+            //注册JDBC驱动程序
+            Class.forName(driver);
+            //建立连接
+            Connection con = DriverManager.getConnection(url, user, password);
+            if (!con.isClosed()) {
+                System.out.println("数据库连接成功");
+                Statement stmt = con.createStatement();
+                String sql = "select title from file";
+                ResultSet rs = stmt.executeQuery(sql);
+
+                for (int i = 0; rs.next(); i++) {
+                    array.add(i, rs.getString("title"));
+                }
+//                while(rs.next()){
+//                    in.append(rs.getString("title"));
 //
-//        File file = new File(fd.getDirectory() + fd.getFile() + ".txt");
-//        try {
-//            file.createNewFile();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            FileWriter writer = new FileWriter(file);
-//            String str = Text1.getText();
-//            System.out.println(str);
-//            writer.write(str);
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+//                }
+//                String in1 = in.toString();
+//                System.out.println(in1);
+                System.out.println(array);
+            }
 
 
-//        try {
-//            FileOutputStream out =new FileOutputStream(fd.getDirectory()+ fd.getFile() +".txt");
-//            String str="TEST";
-//            try {
-//                out.write(str.getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                out.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+            con.close();
+        } catch (ClassNotFoundException e) {
+            System.out.println("数据库驱动没有安装");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("数据库连接失败");
+        }
+        return array;
+    }
+
+    public StringBuilder readText(String name) {
+        String driver = "com.mysql.cj.jdbc.Driver";
+        String url = "jdbc:mysql://42.192.73.17:3306/fileManage?&useSSL=false&serverTimezone=UTC";
+        String user = "root";
+        String password = "lapis";
+        StringBuilder in = new StringBuilder();
+        try {
+            //注册JDBC驱动程序
+            Class.forName(driver);
+            //建立连接
+            Connection con = DriverManager.getConnection(url, user, password);
+            if (!con.isClosed()) {
+                System.out.println("数据库连接成功");
+                Statement stmt = con.createStatement();
+
+                String sql1 = "select text from file where title ='" + name + "' ";
+//                ((PreparedStatement) stmt).setString(1,in1);
+                ResultSet rs1 = stmt.executeQuery(sql1);
+                while (rs1.next()) {
+                    in.append(rs1.getString("text"));
+                }
+//                System.out.println(in);
+            }
 
 
+            con.close();
+        } catch (ClassNotFoundException e) {
+            System.out.println("数据库驱动没有安装");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("数据库连接失败");
+        }
+        return in;
+    }
 
 
+    public void showText(Event event) {
+        ArrayList<String> list = getList();
+        for (String text : list) {
+            MenuItem item = new MenuItem();
 
-    public void focusChange(MouseEvent event) {
-        ObservableList<Node> l = mainView.getItems();
-        tabMain = (TabPane) l.get(0);
+            item.setText(text + ".txt");
+            item.setOnAction(
+                    event1 -> {
+                        System.out.println(item.getText());
+                        String[] title = (item.getText()).split("\\.");
+                        System.out.println(title[0]);
+                        System.out.println(readText(title[0]));
+                        addText(readText(title[0]),title[0]);
+
+                    }
+            );
+            openData.getItems().add(item);
+        }
     }
 }
