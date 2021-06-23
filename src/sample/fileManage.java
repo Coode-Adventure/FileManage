@@ -16,7 +16,7 @@ public class fileManage extends Application {
         primaryStage.setTitle("Hello World");
 //        primaryStage.initStyle(StageStyle.UNDECORATED);
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 800, 500);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("sample.css")).toExternalForm());
         primaryStage.setScene(scene);
 //        primaryStage.setResizable(false);
