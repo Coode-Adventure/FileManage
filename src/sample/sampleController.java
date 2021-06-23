@@ -2,7 +2,6 @@ package sample;
 
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -16,6 +15,8 @@ import java.awt.Dialog;
 import java.awt.*;
 import java.io.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class sampleController extends Node {
     @FXML
@@ -107,20 +108,20 @@ public class sampleController extends Node {
 
     //清空空元素TabPane
     public void deleteTabPane() {
-        System.out.println(mainView.getItems()+"---");
-        TabPane de=null;
+        System.out.println(mainView.getItems() + "---");
+        TabPane de = null;
         for (Node s : mainView.getItems()) {
-            System.out.println(((TabPane) s).getTabs()+"++++");
-            if((((TabPane) s).getTabs()).size()==0){
+            System.out.println(((TabPane) s).getTabs() + "++++");
+            if ((((TabPane) s).getTabs()).size() == 0) {
                 System.out.println("有一个为空");
-                de= (TabPane) s;
+                de = (TabPane) s;
             }
         }
         //TabPane至少保留一个
-        if(mainView.getItems().size()!=1){
+        if (mainView.getItems().size() != 1) {
             mainView.getItems().remove(de);
         }
-        System.out.println(mainView.getItems()+"----");
+        System.out.println(mainView.getItems() + "----");
     }
 
     public void SelectFile(MouseEvent event) {
@@ -190,10 +191,16 @@ public class sampleController extends Node {
 
     //打开文件
     public void openFile(Event event) {
+
+
+        StringBuilder data = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tim = sdf.format(new Date());
+        int count = 0;
         FileDialog fd = new FileDialog((Dialog) null, "另存为", 1);
         fd.setVisible(true);
         System.out.println(fd.getDirectory() + fd.getFile() + ".txt");
-
+        String name = fd.getFile();
         File file = new File(fd.getDirectory() + fd.getFile() + ".txt");
         try {
             file.createNewFile();
@@ -209,6 +216,87 @@ public class sampleController extends Node {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File f1 = new File(fd.getDirectory() + fd.getFile() + ".txt");
+        if (f1.exists()) {
+            try (BufferedReader bis = new BufferedReader(new FileReader(fd.getDirectory() + fd.getFile() + ".txt"))) {
+
+                while (bis.ready()) {
+                    data.append(bis.readLine() + "\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //jdbc驱动
+        String driver = "com.mysql.cj.jdbc.Driver";
+        String url = "jdbc:mysql://42.192.73.17:3306/fileManage?&useSSL=false&serverTimezone=UTC";
+        String user = "root";
+        String password = "lapis";
+        String a = data.toString();
+        try {
+            //注册JDBC驱动程序
+            Class.forName(driver);
+            //建立连接
+            Connection con = DriverManager.getConnection(url, user, password);
+            if (!con.isClosed()) {
+                System.out.println("数据库连接成功");
+                Statement stmt = con.createStatement();
+                String sql = "select title from file";
+                ResultSet rs = stmt.executeQuery(sql);
+
+                while (rs.next()) {
+                    String bi = rs.getString("title");
+                    System.out.println(bi);
+                    if (name.equals(bi)) {
+                        count++;
+                        System.out.println("文件名已经存在！");
+                    }
+                }
+                if (count == 0) {
+                    stmt = con.prepareStatement("insert into file (title,text,time) values(?,?,?)");
+                    ((PreparedStatement) stmt).setString(1, name);
+                    ((PreparedStatement) stmt).setString(2, a);
+                    ((PreparedStatement) stmt).setString(3, tim);
+                    ((PreparedStatement) stmt).executeUpdate();
+                } else {
+                    stmt = con.prepareStatement("update file  set text = ?,time = ? where title = ?");
+                    ((PreparedStatement) stmt).setString(1, a);
+                    ((PreparedStatement) stmt).setString(2, tim);
+                    ((PreparedStatement) stmt).setString(3, name);
+                    ((PreparedStatement) stmt).executeUpdate();
+                }
+            }
+            con.close();
+        } catch (ClassNotFoundException e) {
+            System.out.println("数据库驱动没有安装");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("数据库连接失败");
+        }
+
+    }
+
+
+//        FileDialog fd = new FileDialog((Dialog) null, "另存为", 1);
+//        fd.setVisible(true);
+//        System.out.println(fd.getDirectory() + fd.getFile() + ".txt");
+//
+//        File file = new File(fd.getDirectory() + fd.getFile() + ".txt");
+//        try {
+//            file.createNewFile();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            FileWriter writer = new FileWriter(file);
+//            String str = Text1.getText();
+//            System.out.println(str);
+//            writer.write(str);
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
 //        try {
@@ -227,7 +315,9 @@ public class sampleController extends Node {
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
-    }
+
+
+
 
 
     public void focusChange(MouseEvent event) {
