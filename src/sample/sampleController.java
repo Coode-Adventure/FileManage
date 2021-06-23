@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -26,9 +27,8 @@ public class sampleController extends Node {
     public Button SelectButton;
     public TextArea T2;
     public Pane P1;
-    public Button fenYe;
     public SplitPane mainView;
-    public MenuItem openFile;
+    public MenuItem newFile, textPage, saveFile;
     public Menu openData;
     //添加按钮和事件
     int id = 0;
@@ -38,75 +38,6 @@ public class sampleController extends Node {
     Tab nowTab = null;
 
 
-    @FXML
-    public void Bclick(MouseEvent event) {
-
-        Connection con;
-        //jdbc驱动
-        String driver = "com.mysql.cj.jdbc.Driver";
-
-        String url = "jdbc:mysql://42.192.73.17:3306/fileManage?&useSSL=false&serverTimezone=UTC";
-        String user = "root";
-        String password = "lapis";
-        try {
-            //注册JDBC驱动程序
-            Class.forName(driver);
-            //建立连接
-            con = DriverManager.getConnection(url, user, password);
-            if (!con.isClosed()) {
-                System.out.println("数据库连接成功");
-
-                Statement stmt = con.createStatement();
-                String sql = "select * from file";
-                ResultSet rs = stmt.executeQuery(sql);
-                StringBuilder a = new StringBuilder();
-                while (rs.next()) {
-                    System.out.println(rs.getString("text"));
-                    a.append("\n").append(rs.getString("text"));
-                }
-                T2.setText(String.valueOf(a));
-            }
-
-            con.close();
-        } catch (ClassNotFoundException e) {
-            System.out.println("数据库驱动没有安装");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("数据库连接失败");
-        }
-
-    }
-
-    // 读取文件功能
-    public void CreateFile(MouseEvent event) throws IOException {
-        File f1 = new File("src/sample/file/test.txt");
-        if (f1.exists()) {
-            System.out.println("文件已存在");
-            try (BufferedReader bis = new BufferedReader(new FileReader("src/sample/file/test.txt"))) {
-
-                StringBuilder data = new StringBuilder();
-                while (bis.ready()) {
-                    data.append(bis.readLine() + "\n");
-
-
-                }
-                T2.setText(String.valueOf(data));
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                f1.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("创建文件成功");
-        }
-
-
-    }
 
     //清空空元素TabPane
     public void deleteTabPane() {
@@ -126,12 +57,15 @@ public class sampleController extends Node {
         System.out.println(mainView.getItems() + "----");
     }
 
-    public void SelectFile(MouseEvent event) {
-        addText(null,null);
 
+    //新建空文本
+    public void newFile(ActionEvent actionEvent) {
+        addText(null, null);
     }
 
-    public void addText(StringBuilder text,String name) {
+
+
+    public void addText(StringBuilder text, String name) {
         if (tabMain == null) {
             ObservableList<Node> l = mainView.getItems();
             if (l.size() == 0) {
@@ -150,13 +84,12 @@ public class sampleController extends Node {
 
         Tab tab1 = new Tab();
         tab1.setId(String.valueOf(id++));
-//        System.out.println(tab1.getId());
         TextArea area1 = new TextArea();
-        if(text!=null){
+        if (text != null) {
             area1.setText(String.valueOf(text));
-            tab1.setText(name+".txt");
-        }else{
-            tab1.setText("未命名.txt");
+            tab1.setText(name + ".txt");
+        } else {
+            tab1.setText("unnamed.txt");
         }
         tab1.setContent(area1);
         //获取焦点
@@ -180,8 +113,8 @@ public class sampleController extends Node {
 //        System.out.println(tabMain.getTabs());
     }
 
-    //添加TabPane
-    public void fenYeClick(MouseEvent event) {
+    //分页
+    public void pagination(ActionEvent actionEvent) {
         TabPane pane1 = new TabPane();
         pane1.setOnMouseClicked(
                 event1 -> {
@@ -189,9 +122,8 @@ public class sampleController extends Node {
                     System.out.println("clicked");
                 });
         Tab tab1 = new Tab();
-        tab1.setText("未命名");
+        tab1.setText("unnamed.txt");
         tab1.setOnSelectionChanged(event1 -> {
-//            tab1.setText("未命名");
             TextArea a = (TextArea) tab1.getContent();
             a.setText(tab1.getId());
 
@@ -205,17 +137,11 @@ public class sampleController extends Node {
         tab1.setContent(area1);
         pane1.getTabs().add(tab1);
         mainView.getItems().add(pane1);
-
-
     }
 
-    public void focusChange(MouseEvent event) {
-        ObservableList<Node> l = mainView.getItems();
-        tabMain = (TabPane) l.get(0);
-    }
 
     //打开文件
-    public void openFile(Event event) {
+    public void saveFile(Event event) {
 
 
         StringBuilder data = new StringBuilder();
@@ -251,7 +177,7 @@ public class sampleController extends Node {
             try (BufferedReader bis = new BufferedReader(new FileReader(fd.getDirectory() + fd.getFile() + ".txt"))) {
 
                 while (bis.ready()) {
-                    data.append(bis.readLine() + "\n");
+                    data.append(bis.readLine()).append("\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -304,7 +230,6 @@ public class sampleController extends Node {
             e.printStackTrace();
             System.out.println("数据库连接失败");
         }
-
     }
 
 
@@ -386,7 +311,7 @@ public class sampleController extends Node {
         return in;
     }
 
-
+    //显示数据库标题
     public void showText(Event event) {
         ArrayList<String> list = getList();
         for (String text : list) {
@@ -399,11 +324,23 @@ public class sampleController extends Node {
                         String[] title = (item.getText()).split("\\.");
                         System.out.println(title[0]);
                         System.out.println(readText(title[0]));
-                        addText(readText(title[0]),title[0]);
+                        addText(readText(title[0]), title[0]);
 
                     }
             );
             openData.getItems().add(item);
         }
     }
+    //删除数据库标题
+    public void deleteText(Event event){
+        ObservableList<MenuItem> s = openData.getItems();
+        System.out.println(s);
+        for(int i=s.size()-1;i>0;i--){
+            System.out.println(s.get(i)+""+i);
+            openData.getItems().remove(s.get(i));
+        }
+//        System.out.println(openData.getItems());
+    }
+
+
 }

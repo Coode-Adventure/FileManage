@@ -12,8 +12,10 @@
 
 /*button类型选择器设置所有Button的背景色*/
 .button {
-       -fx-background-color: rgba(53, 89, 119, 0.2);
-
+       -fx-background-color: rgba(53, 89, 119, 0);
+       -fx-background-image: url(images/test.png);
+       -fx-focus-color: transparent;
+       -fx-faint-focus-color: transparent;
        transition: 2s;
        -fx-transition: 2s;
 }
@@ -31,11 +33,13 @@
 .text-area {
        -fx-background-color: rgba(53, 89, 119, 0.2);
        -fx-padding: 20px;
+       -fx-text-fill: blue;
 
 }
 
 .text-area .content {
-       -fx-background-image: url(images/su.jpg);
+       /* -fx-background-image: url(images/su.jpg); */
+
 }
 
 /* .text-area .scroll-pane {

@@ -6,12 +6,7 @@
 
 <BorderPane focusTraversable="true" maxHeight="500.0" maxWidth="800.0" minHeight="400.0" minWidth="600.0" prefHeight="406.0" prefWidth="623.0" stylesheets="@sample.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.sampleController">
     <bottom>
-        <Pane fx:id="P1" prefHeight="62.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <Button layoutX="105.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#Bclick" text="连接数据库" />
-            <Button fx:id="CreateButton" layoutX="263.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#CreateFile" text="创建文件" />
-            <Button fx:id="SelectButton" layoutX="474.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#SelectFile" text="添加按钮" />
-           <Button fx:id="fenYe" layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onMouseClicked="#fenYeClick" text="分页" />
-        </Pane>
+        <Pane fx:id="P1" prefHeight="62.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
     </bottom>
    <center>
        <SplitPane fx:id="mainView" cache="true" pickOnBounds="false" prefHeight="57.0" prefWidth="600.0" BorderPane.alignment="CENTER">
@@ -22,15 +17,17 @@
    </center>
    <top>
         <MenuBar prefHeight="39.0" prefWidth="524.0" BorderPane.alignment="CENTER">
-            <Menu text="文件">
-                <MenuItem mnemonicParsing="false" text="新建文本" />
-                <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#openFile" text="保存文本" />
+            <Menu text="file">
+                <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#newFile" text="create file" />
+                <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#saveFile" text="save file" />
             </Menu>
-            <Menu mnemonicParsing="false" text="页面">
-                <MenuItem mnemonicParsing="false" text="Delete" />
+            <Menu mnemonicParsing="false" text="page">
+                <MenuItem fx:id="textPage" mnemonicParsing="false" onAction="#pagination" text="paging" />
             </Menu>
-            <Menu fx:id="openData" mnemonicParsing="false" onShowing="#showText" text="open in Database">
-                <MenuItem mnemonicParsing="false" text="从数据库打开文件" />
+            <Menu fx:id="openData" mnemonicParsing="false" onHiding="#deleteText" onShowing="#showText" text="open in Database">
+            <items>
+               <MenuItem mnemonicParsing="false" text="DATABASE" />
+            </items>
             </Menu>
         </MenuBar>
    </top>
