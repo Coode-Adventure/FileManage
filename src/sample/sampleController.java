@@ -2,18 +2,18 @@ package sample;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 
+import java.awt.*;
+import java.awt.Dialog;
 import java.io.*;
 import java.sql.*;
-<<<<<<< Updated upstream
-=======
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
->>>>>>> Stashed changes
 
 public class sampleController extends Node {
     @FXML
@@ -21,6 +21,8 @@ public class sampleController extends Node {
     public TextArea T1;
     public Button CreateButton;
     public Button SelectButton;
+    public TextArea Text1;
+    public SplitPane mainView;
 
     @FXML
     public void Bclick(MouseEvent event) {
@@ -92,9 +94,7 @@ public class sampleController extends Node {
     public void SelectFile(MouseEvent event) {
 
     }
-<<<<<<< Updated upstream
-}
-=======
+
 
     public void fenYeClick(MouseEvent event) {
         TabPane pane1 = new TabPane();
@@ -215,5 +215,3 @@ public class sampleController extends Node {
 
 
 
-
->>>>>>> Stashed changes
