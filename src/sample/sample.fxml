@@ -5,18 +5,18 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane focusTraversable="true" maxHeight="500.0" maxWidth="800.0" minHeight="400.0" minWidth="600.0" prefHeight="406.0" prefWidth="623.0" stylesheets="@sample.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.sampleController">
-    <bottom>
-        <Pane fx:id="P1" prefHeight="62.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
-    </bottom>
    <center>
-       <SplitPane fx:id="mainView" cache="true" pickOnBounds="false" prefHeight="57.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-           <opaqueInsets>
-               <Insets />
-           </opaqueInsets>
+       <SplitPane fx:id="mainView" cache="true" pickOnBounds="false">
+         <items>
+             <VBox fx:id="boxV" prefHeight="277.0" prefWidth="622.0" />
+         </items>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
        </SplitPane>
    </center>
    <top>
-        <MenuBar prefHeight="39.0" prefWidth="524.0" BorderPane.alignment="CENTER">
+        <MenuBar prefHeight="55.0" prefWidth="623.0" BorderPane.alignment="CENTER">
             <Menu text="file">
                 <MenuItem fx:id="newFile" mnemonicParsing="false" onAction="#newFile" text="create file" />
                 <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#saveFile" text="save file" />
@@ -25,9 +25,10 @@
                 <MenuItem fx:id="textPage" mnemonicParsing="false" onAction="#pagination" text="paging" />
             </Menu>
             <Menu fx:id="openData" mnemonicParsing="false" onHiding="#deleteText" onShowing="#showText" text="open in Database">
-            <items>
-               <MenuItem mnemonicParsing="false" text="DATABASE" />
-            </items>
+                <MenuItem mnemonicParsing="false" text="DATABASE" />
+            </Menu>
+            <Menu fx:id="preview" mnemonicParsing="false" onAction="#toPreview" text="preview">
+                <MenuItem mnemonicParsing="false" text="GO" />
             </Menu>
         </MenuBar>
    </top>

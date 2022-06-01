@@ -5,13 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.awt.Dialog;
 import java.awt.*;
@@ -20,30 +20,46 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class sampleController extends Node {
     @FXML
-    public Button CreateButton;
-    public Button SelectButton;
-    public TextArea T2;
     public Pane P1;
     public SplitPane mainView;
     public MenuItem newFile, textPage, saveFile;
     public Menu openData;
+    public Menu preview;
+    public VBox boxV;
     //添加按钮和事件
     int id = 0;
     TabPane tabMain = null;
     //获取当前text页面
     TextArea nowText = null;
     Tab nowTab = null;
-
-
+    Map<Character, String> style = new HashMap<Character, String>() {{
+        put('-', "-fx-text-inner-color: #1F0C07;");
+        put('+', "-fx-text-inner-color: #FB5B68;");
+        put('<', "-fx-text-inner-color: #FFEB48;");
+        put('>', "-fx-text-inner-color: #2676A1;");
+        put('*', "-fx-text-inner-color: #FFBDB0;");
+        put('&', "-fx-text-inner-color: #FA74BF;");
+        put('_', "-fx-text-inner-color: #FA74BF;");
+        put('1', "-fx-font-size: 40;");
+        put('2', "-fx-font-size: 38;");
+        put('3', "-fx-font-size: 36;");
+    }};
 
     //清空空元素TabPane
     public void deleteTabPane() {
         System.out.println(mainView.getItems() + "---");
         TabPane de = null;
+        boolean vb = true;
         for (Node s : mainView.getItems()) {
+            if (vb) {
+                vb = false;
+                continue;
+            }
             System.out.println(((TabPane) s).getTabs() + "++++");
             if ((((TabPane) s).getTabs()).size() == 0) {
                 System.out.println("有一个为空");
@@ -51,24 +67,21 @@ public class sampleController extends Node {
             }
         }
         //TabPane至少保留一个
-        if (mainView.getItems().size() != 1) {
+        if (mainView.getItems().size() != 2) {
             mainView.getItems().remove(de);
         }
         System.out.println(mainView.getItems() + "----");
     }
-
 
     //新建空文本
     public void newFile(ActionEvent actionEvent) {
         addText(null, null);
     }
 
-
-
     public void addText(StringBuilder text, String name) {
         if (tabMain == null) {
             ObservableList<Node> l = mainView.getItems();
-            if (l.size() == 0) {
+            if (l.size() == 1) {
                 TabPane pane1 = new TabPane();
                 pane1.setOnMouseClicked(
                         event1 -> {
@@ -104,7 +117,7 @@ public class sampleController extends Node {
         tab1.setOnClosed(
                 event1 -> {
                     TextArea a = (TextArea) tab1.getContent();
-                    a.setText(tab1.getId());
+//                    a.setText(tab1.getId());
 //                    System.out.println(a.getText());
                     deleteTabPane();
                 }
@@ -122,10 +135,16 @@ public class sampleController extends Node {
                     System.out.println("clicked");
                 });
         Tab tab1 = new Tab();
+        tab1.setId(String.valueOf(id++));
         tab1.setText("unnamed.txt");
         tab1.setOnSelectionChanged(event1 -> {
-            TextArea a = (TextArea) tab1.getContent();
-            a.setText(tab1.getId());
+//            TextArea a = (TextArea) tab1.getContent();
+//            a.setText(tab1.getId());
+            if (nowTab != tab1) {
+                nowTab = tab1;
+                nowText = (TextArea) tab1.getContent();
+                System.out.println("焦点改变+" + tab1.getId());
+            }
 
         });
         tab1.setOnClosed(
@@ -138,7 +157,6 @@ public class sampleController extends Node {
         pane1.getTabs().add(tab1);
         mainView.getItems().add(pane1);
     }
-
 
     //打开文件
     public void saveFile(Event event) {
@@ -231,7 +249,6 @@ public class sampleController extends Node {
             System.out.println("数据库连接失败");
         }
     }
-
 
     public ArrayList<String> getList() {
         String driver = "com.mysql.cj.jdbc.Driver";
@@ -331,16 +348,72 @@ public class sampleController extends Node {
             openData.getItems().add(item);
         }
     }
+
     //删除数据库标题
-    public void deleteText(Event event){
+    public void deleteText(Event event) {
         ObservableList<MenuItem> s = openData.getItems();
         System.out.println(s);
-        for(int i=s.size()-1;i>0;i--){
-            System.out.println(s.get(i)+""+i);
+        for (int i = s.size() - 1; i > 0; i--) {
+            System.out.println(s.get(i) + "" + i);
             openData.getItems().remove(s.get(i));
         }
 //        System.out.println(openData.getItems());
     }
 
+    public void toPreview(ActionEvent actionEvent) {
+        boxV.getChildren().clear();
+        String text = nowText.getText();
+        String[] a = text.split("\n");
+        for (String s : a) {
+            TextField f = new TextField();
+            for (int i = 0; i < s.length(); i++) {
+                System.out.println(i);
+                int num = 0;
+                StringBuilder re = new StringBuilder();
+                if (s.charAt(i) == '#') {
+                    System.out.println("匹配到");
+                    String temp = "";
+                    if (s.charAt(i) == '#') {
+                        System.out.println("#计数");
+                        while (s.charAt(i) == '#') {
+                            re.append("#");
+                            num++;
+                            i++;
+//                            s = s.replace(String.valueOf(s.charAt(i)), "");
+                        }
+                        System.out.println(re);
 
+                        temp = Integer.toString(num);
+                        System.out.println("num:" + num);
+                        f.setStyle(style.get(temp.charAt(0)));
+                    }
+                    if (style.get(s.charAt(i)) != null) {
+                        System.out.println(s.charAt(i));
+                        f.setStyle(style.get(temp.charAt(0)) + style.get(s.charAt(i)));
+                        s = s.replace(String.valueOf(s.charAt(i)), "");
+                    }
+                    System.out.println("i:" + i);
+                    s = s.replace(String.valueOf(re), "");
+                    System.out.println("颜色");
+                    System.out.println(f.getStyle());
+                    break;
+
+                } else if (style.get(s.charAt(i)) != null && (s.charAt(i) > '9' || s.charAt(i) < '0')) {
+                    f.setStyle(style.get(s.charAt(i)));
+                    s = s.replace(String.valueOf(s.charAt(i)), "");
+                    break;
+                } else if (s.charAt(i) != ' ') {
+                    System.out.println("退出");
+                    break;
+                }
+            }
+            System.out.println(s);
+            f.setEditable(false);
+            f.setText(s);
+
+            boxV.getChildren().add(f);
+        }
+
+
+    }
 }

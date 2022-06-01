@@ -1,0 +1,12 @@
+#+ Why Use Java?
+-      1.Java works on different platforms
+<      2.It is open-source and free
+>      3.It is secure, fast and powerful
+##* more important
+&     4.It is easy to learn and simple to use
+#+为什么使用java？
+-     1.Java在不同的平台上工作
+<     2.它是开源和免费的
+>     3.它是安全的，快速和强大的
+#*更重要
+&     4.易于学习和使用简单

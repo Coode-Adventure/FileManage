@@ -1,0 +1,12 @@
+# why use python?
+<     1.Readable and Maintainable Code
+>     2.Multiple Programming Paradigms
+-     3.Compatible with Major Platforms and Systems
+##+ more important
+*     4.Robust Standard Library
+# 为什么要使用python？
+<     1.可读和可维护代码
+>     2.多个编程范式
+-     3.与主要平台和系统兼容
+##+更重要
+*     4.坚固的标准库
